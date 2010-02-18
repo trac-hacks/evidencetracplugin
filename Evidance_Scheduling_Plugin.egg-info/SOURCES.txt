@@ -1,0 +1,9 @@
+setup.py
+Evidance_Scheduling_Plugin.egg-info/PKG-INFO
+Evidance_Scheduling_Plugin.egg-info/SOURCES.txt
+Evidance_Scheduling_Plugin.egg-info/dependency_links.txt
+Evidance_Scheduling_Plugin.egg-info/entry_points.txt
+Evidance_Scheduling_Plugin.egg-info/top_level.txt
+src/__init__.py
+src/core.py
+src/ticket_webui.py

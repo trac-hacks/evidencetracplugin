@@ -1,0 +1,7 @@
+#!/bin/bash
+python setup.py bdist_egg
+mv -f ./dist/* $HOME/tracproject/plugins/
+killall tracstart
+killall tracd &
+echo 'starting tracd' & tracstart > $HOME/tracd_log &
+
