@@ -1,4 +1,0 @@
-
-        [trac.plugins]
-        evidence = src
-    
