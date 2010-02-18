@@ -1,0 +1,8 @@
+== Introduction
+
+Go read Joel's blog - http://www.joelonsoftware.com/items/2007/10/26.html
+
+== Version
+
+It is still in early development
+
