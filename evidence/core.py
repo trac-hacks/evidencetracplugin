@@ -18,9 +18,13 @@ from trac.util import Markup
 from trac.web.href import Href
 from genshi.filters.transform import Transformer
 
+#
+######################
+#
 
 def ticket_finish(db, ticket_id):
     predicted_hours = ticket_estimate_time(db, ticket_id)
+    if(predicted_hours == 0): return (0, 'unknown')
     return ( predicted_hours, calculate_finish_time(predicted_hours) )
 
 #
@@ -50,8 +54,8 @@ def get_estimation_history(db, owner):
                             tc.value > 0""", [owner, field] )
         
         res[field] = [ float(v[0]) for v in cursor ]
-    
-    ret = map(lambda r: r[0]/r[1], zip(*res.values()))
+    hist = filter( lambda t: t[1] > 0 and t[0] > 0,  zip(*res.values()) )
+    ret = map(lambda r: r[0]/r[1], hist)
     return (ret, zip(*res.values())) if len(ret) > 0 else ([2], [(1,2)])
 
 #
@@ -69,6 +73,7 @@ def ticket_estimate_time(db, ticket_id):
     cursor = db.cursor()
     cursor.execute("SELECT value FROM ticket_custom WHERE ticket = %s AND name='estimatedhours' LIMIT 1;", [ticket_id] )
     (ticket_estimate, ) = cursor.fetchone()
+    if(ticket_estimate == 0): return 0
     predictions = []
     for i in xrange(100):
         predictions.append( float(ticket_estimate) * history[random.randint(0, len(history)-1)] )
@@ -235,7 +240,9 @@ class TicketWebUiAddon(Component):
             return stream
         self.log.error(req.path_info)
         db = self.env.get_db_cnx()
-        ticket_id = re.match(r'.*ticket/([\d]+).*', req.path_info).group(1)
+        m = re.match(r'.*ticket/([\d]+).*', req.path_info)
+        if(m==None): return stream
+        ticket_id = m.group(1)
         stream = stream | Transformer('//div[@id="ticket"]').after(
                                                                 tag.a("Predicted finish date: %s" % ticket_finish(db,ticket_id)[1],  href = req.href.ticket('/%s/ebs' % ticket_id))()
                                                                     )
