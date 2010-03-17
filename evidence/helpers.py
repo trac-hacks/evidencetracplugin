@@ -35,9 +35,10 @@ def get_estimation_history(db, owner):
                             t.owner = %s AND
                             t.status = 'closed' AND
                             tc.name = %s AND
-                            tc.value > 0
+                            tc.value > 0 AND
+                            time > %d
                         ORDER BY 
-                            t.id DESC""", [owner, field] )
+                            t.id DESC""", [ owner, field, int(time.time())-129600 ] ) # 129600 - 90 дни
         
         res[field] = [ float(v[0]) for v in cursor if float(v[0])>0 ]
     

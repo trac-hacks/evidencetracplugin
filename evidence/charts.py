@@ -14,6 +14,6 @@ def user_scattered(hist, avg):
             "chxt=x,y,x,y",
             "chxl=2:||expected|3:||actual|",
             "chd=t:%s|%s" % (est, act),
-            "chm=o,0000FF,0,-1,6|D,000000,1,-2:,1,-1",
+            "chm=o,0000FF,0,-1,6|D,000000,1,-2:,1,-1|o,FF0000,0,0:%d:,5" % len(hist)-3,
             ),
         alt="estemated to actual chart")
