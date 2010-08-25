@@ -8,8 +8,25 @@ import time
 
 def ticket_finish(db, ticket_id):
     predicted_hours = ticket_estimate_time(db, ticket_id)
-    if(predicted_hours == 0): return (0, 'unknown')
-    return ( predicted_hours, calculate_finish_time(predicted_hours) )
+    if(predicted_hours == 0): return None
+    cursor = db.cursor()
+    cursor.execute("""SELECT
+                            tc.value
+                        FROM
+                            ticket_custom tc
+                        WHERE
+                            tc.ticket = %s AND
+                            tc.name = %s;
+                    """, [str(ticket_id), 'totalhours'] )
+    row = cursor.fetchone()
+    if not row:
+        worked_hours = 0
+    else:
+        worked_hours = float(row[0])
+
+    hours_left = predicted_hours - worked_hours
+    if hours_left < 0: return None
+    return ( predicted_hours, calculate_finish_time(hours_left) )
 
 #
 ######################
@@ -23,28 +40,52 @@ def get_estimation_history(db, owner):
                 )
     """
     cursor = db.cursor()
-    res = {}
-    for field in ['totalhours', 'estimatedhours']:
+
+    three_months_before = int(time.time())-129600
+
+    cursor.execute("""
+        SELECT
+            id
+        FROM
+            ticket
+        WHERE
+            owner = %s AND
+            status = 'closed' AND
+            changetime > %s
+    """, [str(owner), str(three_months_before)] )
+
+    vector = []
+    histstory = []
+    
+    tickets = [int(row[0]) for row in cursor]
+
+    for ticket in tickets:
+        total = 0
+        estimated = 0
+        
         cursor.execute("""SELECT
+                            tc.name,
                             tc.value
                         FROM
                             ticket_custom tc
-                          LEFT JOIN
-                            ticket t ON tc.ticket = t.id
                         WHERE
-                            t.owner = %s AND
-                            t.status = 'closed' AND
-                            tc.name = %s AND
-                            tc.value > 0 AND
-                            time > %d
-                        ORDER BY 
-                            t.id DESC""", [ owner, field, int(time.time())-129600 ] ) # 129600 - 90 дни
-        
-        res[field] = [ float(v[0]) for v in cursor if float(v[0])>0 ]
-    
-    hist = filter( lambda t: t[1] > 0 and t[0] > 0,  zip( res['estimatedhours'], res['totalhours'] ) )
-    ret = map(lambda r: r[0]/r[1], hist)
-    return (ret, hist) if len(ret) > 0 else ([2], [(1,2)])
+                            tc.ticket = %s AND
+                            ( tc.name = %s OR tc.name = %s)
+                    """, [str(ticket), 'totalhours', 'estimatedhours'] ) # 129600 - 90 дни
+
+        for row in cursor:
+            if row[0] == 'estimatedhours':
+                estimated = float(row[1])
+            else:
+                total = float(row[1])
+
+        if total <= 0 or estimated <= 0:
+            continue  # with for ticket in tickets
+
+        vector.append(total / estimated)
+        histstory.append((estimated, total))
+                            
+    return (vector, histstory) if len(vector) > 0 else ([2], [(1,2)])
 
 #
 ######################

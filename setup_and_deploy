@@ -1,5 +1,6 @@
 #!/bin/bash
 python setup.py bdist_egg
+rm $HOME/tracproject/plugins/Evidence*
 mv -f ./dist/* $HOME/tracproject/plugins/
 killall tracstart
 killall tracd &
