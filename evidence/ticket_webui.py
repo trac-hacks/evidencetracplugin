@@ -18,29 +18,30 @@ class TicketWebUiAddon(Component):
 
     # ITemplateStreamFilter
     def filter_stream(self, req, method, filename, stream, data):
-        self.log.debug("EBS TicketWebUiAddon executing")
         
         if not filename == 'ticket.html':
-            self.log.debug("EBS TicketWebUiAddon not the correct template")
             return stream
         
         self.log.error(req.path_info)
         
         db = self.env.get_db_cnx()
         m = re.match(r'.*ticket/([\d]+).*', req.path_info)
-
-        self.log.debug(data)
         
         if(m==None): return stream
         
         ticket_id = int(m.group(1))
         ticket_ebs_info = ticket_finish(db, ticket_id)
 
-        if not ticket_ebs_info: return stream
+        if not ticket_ebs_info:
+            self.log.debug("No ebs info for ticket %d" % ticket_id)
+            return stream
         
         time_div = tag.div("Predicted hours to work: %s" % str(ticket_ebs_info[0]))()
         stream = stream | Transformer('//div[@id="ticket"]').after(time_div)
 
+        if data['ticket'].values['status'] == 'closed':
+            # no point in showing predicted dates for already closed tickets
+            return stream
         
         ahref = tag.a("Predicted finish date: %s" % ticket_ebs_info[1],  href = req.href.ticket('/%d/ebs' % ticket_id))()
         stream = stream | Transformer('//div[@id="ticket"]').after(ahref)

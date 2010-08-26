@@ -18,7 +18,7 @@ from helpers import *
 #
 ######################
 #
-class EvidanceSchedulingUser(Component):
+class EvidenceSchedulingUser(Component):
     implements(IRequestHandler, ITemplateProvider)
     
     # IRequestHandler methods

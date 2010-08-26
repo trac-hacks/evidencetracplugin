@@ -17,7 +17,7 @@ from helpers import *
 #
 ######################
 #
-class EvidanceSchedulingTicket(Component):
+class EvidenceSchedulingTicket(Component):
     implements(IRequestHandler, ITemplateProvider)
     
     #
@@ -64,11 +64,10 @@ class EvidanceSchedulingTicket(Component):
         data = {
             'hours_left': predicted_hours,
             'date': date,
-            'today': time.ctime(),
             'link': tag.a("Programmer's evidence profile", href=req.href.ebs('/user/%s/' % owner)),
             'owner' : owner,
             'ticket_id' : ticket_id,
         }
         # This tuple is for Genshi (template_name, data, content_type)
         # Without data the trac layout will not appear.
-        return 'evidance.html', data, None
+        return 'evidence.html', data, None

@@ -1,3 +1,3 @@
 from ticket_webui import TicketWebUiAddon
-from ticket_ebs import EvidanceSchedulingTicket
-from user_ebs import EvidanceSchedulingUser
+from ticket_ebs import EvidenceSchedulingTicket
+from user_ebs import EvidenceSchedulingUser
