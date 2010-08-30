@@ -41,7 +41,8 @@ def get_estimation_history(db, owner):
     """
     cursor = db.cursor()
 
-    three_months_before = int(time.time())-129600
+    # it is *now* 3 months before :)
+    three_months_before = int(time.time())-7776000 
 
     cursor.execute("""
         SELECT
