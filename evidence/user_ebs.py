@@ -23,7 +23,6 @@ class EvidenceSchedulingUser(Component):
     
     # IRequestHandler methods
     def match_request(self, req):
-        self.log.error("*** request : %r ***", req)
         return re.match(r'/ebs/user/[\w_][\d\w_]+/?$', req.path_info)
     
     def process_request(self, req):
@@ -40,11 +39,23 @@ class EvidenceSchedulingUser(Component):
         db = self.env.get_db_cnx()
         velocities, hist = get_estimation_history(db, user)
         avg = float(sum(velocities) / len(velocities))
+
+        latest = [
+            {
+                'cont': "%.1f" % (hist[tick_id]['time_total'] / hist[tick_id]['time_estimated']),
+                'href' : req.href.ticket(tick_id),
+                'title' : 'ticket #%d - %s' % (tick_id, hist[tick_id]['title']),
+                
+            }
+                for tick_id in sorted(hist.keys(), key=lambda tid: hist[tid]['changetime'])[-10:]
+        ]
+            
+            
         data = {
             'user' : user, 
-            'chart': charts.user_scattered(hist, avg), 
+            'chart': charts.user_scattered([(hist[tick_id]['time_estimated'], hist[tick_id]['time_total']) for tick_id in hist], avg),
             'vel': '%.2f' % avg,
-            'latest' : ", ".join(map(lambda f: '%.1f'%f, velocities[-10:])),
+            'latest' : latest, #", ".join(latest),
         }
         
         return 'user.html', data, None

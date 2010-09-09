@@ -36,14 +36,7 @@ class TicketWebUiAddon(Component):
             self.log.debug("No ebs info for ticket %d" % ticket_id)
             return stream
         
-        time_div = tag.div("Predicted hours to work: %s" % str(ticket_ebs_info[0]))()
-        stream = stream | Transformer('//div[@id="ticket"]').after(time_div)
-
-        if data['ticket'].values['status'] == 'closed':
-            # no point in showing predicted dates for already closed tickets
-            return stream
-        
-        ahref = tag.a("Predicted finish date: %s" % ticket_ebs_info[1],  href = req.href.ticket('/%d/ebs' % ticket_id))()
+        ahref = tag.a("Predicted hours to work: %s" % str(ticket_ebs_info[0]),  href = req.href.ticket('/%d/ebs' % ticket_id))()
         stream = stream | Transformer('//div[@id="ticket"]').after(ahref)
         
         return stream

@@ -18,7 +18,9 @@
       <p>$chart</p>
       <p>Average velocity for this user: <strong><acronym title="real/estimated">$vel</acronym></strong></p>
       <strong>Latest velocities:</strong>
-      <p>$latest</p>
+        <span py:for="ticket in latest">
+            <a href="${ticket.href}" title="${ticket.title}">${ ticket.cont }</a>
+        </span>
     </div>
   </body>
 </html>

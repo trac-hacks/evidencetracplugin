@@ -46,7 +46,7 @@ def get_estimation_history(db, owner):
 
     cursor.execute("""
         SELECT
-            id
+            id, changetime, summary
         FROM
             ticket
         WHERE
@@ -56,11 +56,11 @@ def get_estimation_history(db, owner):
     """, [str(owner), str(three_months_before)] )
 
     vector = []
-    histstory = []
+    histstory = {}
     
-    tickets = [int(row[0]) for row in cursor]
+    tickets = [ (int(row[0]), {'changetime':row[1], 'id':int(row[0]), 'title' : row[2]} ) for row in cursor]
 
-    for ticket in tickets:
+    for ticket, ticket_data in tickets:
         total = 0
         estimated = 0
         
@@ -72,7 +72,7 @@ def get_estimation_history(db, owner):
                         WHERE
                             tc.ticket = %s AND
                             ( tc.name = %s OR tc.name = %s)
-                    """, [str(ticket), 'totalhours', 'estimatedhours'] ) # 129600 - 90 дни
+                    """, [str(ticket), 'totalhours', 'estimatedhours'] )
 
         for row in cursor:
             if row[0] == 'estimatedhours':
@@ -84,9 +84,19 @@ def get_estimation_history(db, owner):
             continue  # with for ticket in tickets
 
         vector.append(total / estimated)
-        histstory.append((estimated, total))
-                            
-    return (vector, histstory) if len(vector) > 0 else ([2], [(1,2)])
+        
+        ticket_data['time_estimated'] = estimated
+        ticket_data['time_total'] = total
+        histstory[ticket] = ticket_data
+
+    dummy_data = {
+        'changetime' : int(time.time()),
+        'time_estimated' : 1,
+        'time_total' : 2,
+        'title' : '',
+    }
+    
+    return (vector, histstory) if len(vector) > 0 else ([2], {0 : dummy_data})
 
 #
 ######################

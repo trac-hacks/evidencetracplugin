@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 # name that is used in packages is the one that is used in the trac.ini file.
 # use package name as entry_points
 setup(
-    name='Evidence Scheduling', version='0.1.4',
+    name='Evidence Scheduling', version='0.1.4.2',
     packages=find_packages(exclude=['*.tests*']),
     entry_points = """
         [trac.plugins]
