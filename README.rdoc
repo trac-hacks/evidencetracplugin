@@ -6,3 +6,11 @@ Go read Joel's blog - http://www.joelonsoftware.com/items/2007/10/26.html
 
 It is still in early development
 
+== Requirements
+
+ * TimingAndEstimationPlugin - http://trac-hacks.org/wiki/TimingAndEstimationPlugin
+
+== Install
+
+http://trac.edgewall.org/wiki/TracPlugins#InstallingaTracPlugin
+
