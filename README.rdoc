@@ -8,7 +8,7 @@ It is still in early development
 
 == Requirements
 
- * TimingAndEstimationPlugin - http://trac-hacks.org/wiki/TimingAndEstimationPlugin
+Timing And Estimation Plugin - http://trac-hacks.org/wiki/TimingAndEstimationPlugin
 
 == Install
 
