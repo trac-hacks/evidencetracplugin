@@ -1,8 +1,8 @@
 #!/bin/bash
 python setup.py bdist_egg
-rm $HOME/tracproject/plugins/Evidence*
-mv -f ./dist/* $HOME/tracproject/plugins/
+rm $HOME/workspace/tracproject/plugins/Evidence*
+mv -f ./dist/* $HOME/workspace/tracproject/plugins/
 killall tracstart
 killall tracd &
-echo 'starting tracd' & tracstart > $HOME/tracd_log &
+echo 'starting tracd' & tracstart > $HOME/workspace/tracproject/tracd_log &
 
