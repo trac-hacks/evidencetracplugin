@@ -1,0 +1,23 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" />
+  <head>
+    <title>Evidance</title>
+  </head>
+
+  <body>
+    <div id="ctxtnav" class="nav"></div>
+
+    <div id="content" class="evidance">
+        <h2>Ticket #$ticket_id prediction</h2>
+        <p>Predicted work hours: $hours_left</p>
+        <p>Today: $today</p>
+        <p>Predicted finish date: $date</p>
+        <p>$link</p>
+    </div>
+  </body>
+</html>

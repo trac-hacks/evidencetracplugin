@@ -49,6 +49,11 @@ class EvidenceSchedulingTicket(Component):
     #
     ######################
     #
+    get_htdocs_dirs = get_templates_dirs
+
+    #
+    ######################
+    #
     def ticket_info(self, req):
         """
         Renders the page with the ticket prediction
